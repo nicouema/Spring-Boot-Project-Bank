@@ -46,7 +46,7 @@ public class Branch implements Auditable {
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "branch_")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "branch")
     @ToString.Exclude
     private Set<Account> accounts;
 

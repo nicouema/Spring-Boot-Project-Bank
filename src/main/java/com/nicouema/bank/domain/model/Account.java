@@ -16,7 +16,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -35,8 +34,8 @@ public class Account implements Auditable {
     private AccountId accountId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id", referencedColumnName = "branch_id", nullable = false)
-    private Branch branch_;
+    @JoinColumn(name = "branch_id", referencedColumnName = "branch_id", nullable = false, updatable = false, insertable = false)
+    private Branch branch;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id",nullable = false)

@@ -3,7 +3,6 @@ package com.nicouema.bank.domain.model;
 import com.nicouema.bank.domain.model.audit.Audit;
 import com.nicouema.bank.domain.model.audit.AuditListener;
 import com.nicouema.bank.domain.model.audit.Auditable;
-import jdk.jfr.Enabled;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

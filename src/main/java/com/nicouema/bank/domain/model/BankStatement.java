@@ -6,7 +6,6 @@ import com.nicouema.bank.domain.model.audit.Auditable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -19,9 +18,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -38,7 +36,9 @@ public class BankStatement implements Auditable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
+    @JoinColumns({
+            @JoinColumn(name = "account_id", referencedColumnName = "account_id"),
+            @JoinColumn(name = "branch_id", referencedColumnName = "branch_id")})
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)

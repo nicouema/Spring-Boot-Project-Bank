@@ -19,7 +19,7 @@ public class AccountId implements Serializable {
     private Long id;
 
     @Column(name = "branch_id", nullable = false)
-    private Branch branch;
+    private Long branch;
 
 
 
