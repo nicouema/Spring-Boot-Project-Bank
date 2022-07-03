@@ -55,6 +55,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!--SendGrid		-->
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+			<version>4.9.2</version>
+		</dependency>
 		<!-- persistence -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

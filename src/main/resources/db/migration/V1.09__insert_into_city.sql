@@ -1,7 +1,7 @@
 INSERT into city(created_at, is_active, name) values
-(current_timestamp(), true, '3 de febrero'),
-(current_timestamp(), true, 'A. Gonzáles Cháves'),
-(current_timestamp(), true, 'Alberti'),
+(current_timestamp(), true, 'Buenos Aires'),
+(current_timestamp(), true, 'Cordoba'),
+(current_timestamp(), true, 'Santa Fe'),
 (current_timestamp(), true, 'Ayacucho'),
 (current_timestamp(), true, 'Bahía Blanca'),
 (current_timestamp(), true, 'Baradero'),

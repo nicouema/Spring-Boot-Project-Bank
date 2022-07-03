@@ -8,11 +8,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="bank" />
+        <module name="Spring-Boot-Project-Bank" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Spring-Boot-Project-Bank" options="-parameters" />
       <module name="bank" options="-parameters" />
     </option>
   </component>
