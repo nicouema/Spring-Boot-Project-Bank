@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -21,6 +22,16 @@ public class AccountId implements Serializable {
     @Column(name = "branch_id", nullable = false)
     private Long branch;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountId accountId = (AccountId) o;
+        return Objects.equals(id, accountId.getId());
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
