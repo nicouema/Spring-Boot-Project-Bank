@@ -35,7 +35,7 @@ public class User implements Auditable, UserDetails {
     private String password;
 
     @OneToOne
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", nullable = false)
+    @JoinColumn(name = "client_id", referencedColumnName = "client_id", nullable = true)
     @ToString.Exclude
     private Client client;
 

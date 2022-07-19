@@ -11,10 +11,11 @@ import com.nicouema.bank.domain.usecase.UserService;
 import com.nicouema.bank.ports.output.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.executable.ValidateOnExecution;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(getRoleIfExists(user.getRole().getId()));
+        user.setRole(getRoleIfExists(defaultRoleUser));
 
         emailService.sendWelcome(user.getEmail(), branchService.getByIdIfExists(defaultBranchId));
 
@@ -59,4 +60,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(("User with email: " + email + " not found").formatted(email)));
+    }
 }

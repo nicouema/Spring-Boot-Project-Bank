@@ -1,5 +1,6 @@
 package com.nicouema.bank.ports.input.rs.controller;
 
+import com.nicouema.bank.common.security.JwtUtils;
 import com.nicouema.bank.domain.model.User;
 import com.nicouema.bank.domain.usecase.UserService;
 import com.nicouema.bank.ports.input.rs.api.AuthenticationApi;
@@ -9,8 +10,6 @@ import com.nicouema.bank.ports.input.rs.response.AuthenticationResponse;
 import com.nicouema.bank.ports.input.rs.response.UserAndAuthenticationResponse;
 import com.nicouema.bank.ports.input.rs.response.UserResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.net.URI;
-import java.nio.file.AccessDeniedException;
 
 import static com.nicouema.bank.ports.input.rs.api.ApiConstants.AUTHENTICATION_URI;
 
@@ -35,6 +34,8 @@ public class AuthenticationController implements AuthenticationApi {
     private final AuthenticationManager authenticationManager;
 
     private final UserControllerMapper mapper;
+
+    private final JwtUtils jwtUtils;
 
     private final UserService userService;
 
@@ -60,7 +61,6 @@ public class AuthenticationController implements AuthenticationApi {
         return ResponseEntity.created(location).body(response);
     }
 
-    @SneakyThrows
     private AuthenticationResponse prepareAuthenticationResponse(String username, String password) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -68,8 +68,11 @@ public class AuthenticationController implements AuthenticationApi {
 
         if (authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails users) {
 
+            final String token = jwtUtils.generateToken(users);
 
             return AuthenticationResponse.builder()
+                    .token(token)
+                    .expirationDAte(jwtUtils.extractExpiration(token))
                     .build();
         }
 

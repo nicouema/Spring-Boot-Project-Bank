@@ -7,6 +7,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,7 +70,19 @@ public class SendGridEmailService implements EmailService{
 
         Email userEmail = new Email(to);
 
+        Personalization personalization = personalization(userEmail, branchFrom);
+        mail.addPersonalization(personalization);
+
         send(mail);
+    }
+
+    private Personalization personalization(Email userEmail, Branch branch) {
+        Personalization personalization;
+        personalization = new Personalization();
+        personalization.addTo(userEmail);
+        personalization.addDynamicTemplateData("name", branch.getName());
+        personalization.addDynamicTemplateData("email", branch.getEmail());
+        return personalization;
 
     }
 }
