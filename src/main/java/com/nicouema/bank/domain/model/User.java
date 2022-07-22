@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 
 
 @Getter
@@ -49,7 +50,10 @@ public class User implements Auditable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (this.role != null) {
+            return Collections.singleton(this.role);
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -64,17 +68,17 @@ public class User implements Auditable, UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
