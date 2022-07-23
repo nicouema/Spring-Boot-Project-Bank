@@ -1,7 +1,6 @@
-package com.nicouema.bank.ports.input.rs.request;
+package com.nicouema.bank.ports.input.rs.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nicouema.bank.ports.input.rs.response.DocumentTypeResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +10,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentTypeListResponse {
+public class BankStatementListResponse {
 
-    private List<DocumentTypeResponse> content = null;
+    private List<BankStatementResponse> content = null;
 
     @JsonProperty("next_uri")
     private String nextUri;
