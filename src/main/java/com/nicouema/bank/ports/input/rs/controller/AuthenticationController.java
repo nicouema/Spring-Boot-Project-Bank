@@ -1,11 +1,15 @@
 package com.nicouema.bank.ports.input.rs.controller;
 
 import com.nicouema.bank.common.security.JwtUtils;
+import com.nicouema.bank.domain.model.Client;
 import com.nicouema.bank.domain.model.User;
+import com.nicouema.bank.domain.usecase.ClientService;
 import com.nicouema.bank.domain.usecase.UserService;
 import com.nicouema.bank.ports.input.rs.api.AuthenticationApi;
+import com.nicouema.bank.ports.input.rs.mapper.ClientControllerMapper;
 import com.nicouema.bank.ports.input.rs.mapper.UserControllerMapper;
 import com.nicouema.bank.ports.input.rs.request.AuthenticationRequest;
+import com.nicouema.bank.ports.input.rs.request.CreateClientRequest;
 import com.nicouema.bank.ports.input.rs.request.CreateUserRequest;
 import com.nicouema.bank.ports.input.rs.response.AuthenticationResponse;
 import com.nicouema.bank.ports.input.rs.response.UserAndAuthenticationResponse;

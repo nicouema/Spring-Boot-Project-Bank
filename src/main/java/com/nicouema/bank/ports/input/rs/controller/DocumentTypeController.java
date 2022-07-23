@@ -6,7 +6,7 @@ import com.nicouema.bank.domain.usecase.DocumentTypeService;
 import com.nicouema.bank.ports.input.rs.api.ApiConstants;
 import com.nicouema.bank.ports.input.rs.api.DocumentTypeApi;
 import com.nicouema.bank.ports.input.rs.mapper.DocumentTypeControllerMapper;
-import com.nicouema.bank.ports.input.rs.request.DocumentTypeListResponse;
+import com.nicouema.bank.ports.input.rs.response.DocumentTypeListResponse;
 import com.nicouema.bank.ports.input.rs.request.DocumentTypeRequest;
 import com.nicouema.bank.ports.input.rs.response.DocumentTypeResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.nicouema.bank.ports.input.rs.api.ApiConstants.DOCUMENT_TYPE_URI;
+import static com.nicouema.bank.ports.input.rs.api.ApiConstants.uriByPageAsString;
 
 @RestController
 @RequestMapping(DOCUMENT_TYPE_URI)
@@ -62,7 +63,7 @@ public class DocumentTypeController implements DocumentTypeApi {
     @GetMapping
     public ResponseEntity<DocumentTypeListResponse> getAllDocumentTypes(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> size) {
 
-        final int pageNumber =page.filter(p -> p > 0).orElse(ApiConstants.DEFAULT_PAGE);
+        final int pageNumber = page.filter(p -> p > 0).orElse(ApiConstants.DEFAULT_PAGE);
         final int pageSize = page.filter(s -> s > 0).orElse(ApiConstants.DEFAULT_PAGE_SIZE);
 
         DocumentTypeList list = service.getDocumentList(PageRequest.of(pageNumber, pageSize));
@@ -78,7 +79,7 @@ public class DocumentTypeController implements DocumentTypeApi {
             response.setNextUri(ApiConstants.uriByPageAsString.apply(nextPage));
 
             final int previousPage = list.getPageable().previousOrFirst().getPageNumber();
-            response.setNextUri(ApiConstants.uriByPageAsString.apply(previousPage));
+            response.setPreviousUri(uriByPageAsString.apply(previousPage));
 
             response.setTotalPages(list.getTotalPages());
             response.setTotalElements(list.getTotalElements());
