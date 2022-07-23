@@ -10,15 +10,8 @@ import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -45,7 +38,7 @@ public class Account implements Auditable {
     private Double minimumBalanceAllowed;
 
     @Column(name = "initial_balance")
-    private Double initialBalance = 0.00;
+    private Double initialBalance;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     @ToString.Exclude
