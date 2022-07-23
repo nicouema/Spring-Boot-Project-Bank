@@ -1,6 +1,6 @@
 CREATE TABLE account
 (
-	account_id              bigint          IDENTITY not null,
+	account_id              bigint          not null AUTO_INCREMENT,
     branch_id               bigint          not null,
     client_id               bigint          not null,
     minimum_balance_allowed double          null,
