@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 
 @Getter
@@ -35,15 +36,13 @@ public class User implements Auditable, UserDetails {
 
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", nullable = true)
-    @ToString.Exclude
-    private Client client;
-
     @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     @ToString.Exclude
     private Role role;
+
+    @OneToOne(mappedBy = "user")
+    private Client client;
 
     @Embedded
     private Audit audit;
@@ -84,5 +83,18 @@ public class User implements Auditable, UserDetails {
     @Override
     public boolean isEnabled() {
         return audit.getIsActive();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User aUser = (User) o;
+        return Objects.equals(id, aUser.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

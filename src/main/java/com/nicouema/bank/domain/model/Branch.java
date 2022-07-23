@@ -21,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -54,4 +55,17 @@ public class Branch implements Auditable {
 
     @Embedded
     private Audit audit;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Branch aBranch = (Branch) o;
+        return Objects.equals(id, aBranch.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

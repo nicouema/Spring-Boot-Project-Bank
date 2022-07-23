@@ -20,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -49,4 +50,17 @@ public class BankStatement implements Auditable {
 
     @Embedded
     private Audit audit;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BankStatement aBankStatement = (BankStatement) o;
+        return Objects.equals(id, aBankStatement.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

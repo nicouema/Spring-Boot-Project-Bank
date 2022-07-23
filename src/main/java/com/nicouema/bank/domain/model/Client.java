@@ -32,8 +32,8 @@ public class Client implements Auditable {
     @JoinColumn(name = "doc_type_id", nullable = false)
     private DocumentType docType;
 
-    @Column(name = "doc_number", nullable = false)
-    private String docNumber;
+    @Column(name = "id_number", nullable = false)
+    private String idNumber;
 
     @Column(nullable = false)
     private String name;
@@ -53,6 +53,11 @@ public class Client implements Auditable {
     @OneToMany(mappedBy = "client_", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<Account> accounts;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @ToString.Exclude
+    private User user;
 
     @Embedded
     private Audit audit;

@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -43,4 +44,17 @@ public class DocumentType implements Auditable {
 
     @Embedded
     private Audit audit;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DocumentType aDocumentType = (DocumentType) o;
+        return Objects.equals(id, aDocumentType.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
