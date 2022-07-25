@@ -1,24 +1,25 @@
 package com.nicouema.bank.ports.input.rs.controller;
 
-import com.nicouema.bank.domain.model.AccountId;
-import com.nicouema.bank.domain.model.BankStatement;
-import com.nicouema.bank.domain.model.BankStatementList;
+import com.nicouema.bank.domain.model.*;
 import com.nicouema.bank.domain.usecase.BankStatementService;
+import com.nicouema.bank.ports.input.rs.api.ApiConstants;
 import com.nicouema.bank.ports.input.rs.api.BankStatementApi;
 import com.nicouema.bank.ports.input.rs.mapper.BankStatementControllerMapper;
 import com.nicouema.bank.ports.input.rs.request.BankStatementRequest;
 import com.nicouema.bank.ports.input.rs.response.BankStatementListResponse;
 import com.nicouema.bank.ports.input.rs.response.BankStatementResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
-import static com.nicouema.bank.ports.input.rs.api.ApiConstants.BANK_STATEMENT_URI;
+import static com.nicouema.bank.ports.input.rs.api.ApiConstants.*;
 
 @RestController
 @RequestMapping(BANK_STATEMENT_URI)
@@ -31,10 +32,22 @@ public class BankStatementController implements BankStatementApi {
 
 
     @Override
-    @PostMapping
-    public ResponseEntity<Void> createBankStatement(@RequestBody BankStatementRequest createBankStatementRequest) {
+    @PostMapping("/{branch_id}/{account_id}")
+    public ResponseEntity<Void> createBankStatement(@RequestBody BankStatementRequest createBankStatementRequest,
+                                                    @PathVariable Long branch_id, @PathVariable Long account_id,
+                                                    @AuthenticationPrincipal User user) {
         BankStatement bankStatement = mapper.bankStatementRequestToBankStatement(createBankStatementRequest);
-        final Long id = service.createBankStatement(bankStatement);
+
+        AccountId accountId = new AccountId();
+        accountId.setId(account_id);
+        accountId.setBranch(branch_id);
+
+        Client client = user.getClient();
+
+        final Long id = service.createBankStatement(bankStatement,
+                createBankStatementRequest.getMovementTypeId(),
+                accountId,
+                client);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("{id}").buildAndExpand(id)
@@ -56,22 +69,68 @@ public class BankStatementController implements BankStatementApi {
     }
 
     @Override
-    public BankStatementResponse getBankStatementById(Long id) {
-        return null;
+    @GetMapping("{id}")
+    public ResponseEntity<BankStatementResponse> getBankStatementById(@PathVariable Long id) {
+        BankStatement bankStatement = service.getBankStatementById(id);
+        BankStatementResponse response = mapper.bankStatementToBankStatementResponse(bankStatement);
+        return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<BankStatementListResponse> getAllBankStatements(Optional<Integer> page, Optional<Integer> size) {
-        return null;
+    @GetMapping
+    public ResponseEntity<BankStatementListResponse> getAllBankStatements(@RequestParam Optional<Integer> page,
+                                                                          @RequestParam Optional<Integer> size) {
+        final int pageNumber = page.filter(p -> p > 0).orElse(DEFAULT_PAGE);
+        final int pageSize = size.filter(s -> s > 0).orElse(DEFAULT_PAGE_SIZE);
+
+        BankStatementList list = service.getAllBankStatements(PageRequest.of(pageNumber, pageSize));
+
+        BankStatementListResponse response;
+        {
+            response = new BankStatementListResponse();
+
+            List<BankStatementResponse> content = mapper.bankStatementListToBankStatementListResponse(list.getContent());
+            response.setContent(content);
+
+            final int nextPage = list.getPageable().next().getPageNumber();
+            response.setNextUri(ApiConstants.uriByPageAsString.apply(nextPage));
+
+            final int previousPage = list.getPageable().previousOrFirst().getPageNumber();
+            response.setPreviousUri(uriByPageAsString.apply(previousPage));
+
+            response.setTotalPages(list.getTotalPages());
+            response.setTotalElements(list.getTotalElements());
+        }
+        return ResponseEntity.ok().body(response);
     }
 
     @Override
-    public ResponseEntity<BankStatementList> getBankStatementsByMovementType(Long movementTypeId, Optional<Integer> page, Optional<Integer> size) {
-        return null;
+    @GetMapping("/movement-type/{movementTypeId}")
+    public ResponseEntity<BankStatementListResponse> getBankStatementsByMovementType(@PathVariable Long movementTypeId,
+                                                                                     Optional<Integer> page,
+                                                                                     Optional<Integer> size) {
+        final int pageNumber = page.filter(p -> p > 0).orElse(DEFAULT_PAGE);
+        final int pageSize = size.filter(s -> s > 0).orElse(DEFAULT_PAGE_SIZE);
+
+        BankStatementList list = service.getBankStatementByMovementType(movementTypeId, PageRequest.of(pageNumber, pageSize));
+
+        BankStatementListResponse response;
+        {
+            response = new BankStatementListResponse();
+
+            List<BankStatementResponse> content = mapper.bankStatementListToBankStatementListResponse(list.getContent());
+            response.setContent(content);
+
+            final int nextPage = list.getPageable().next().getPageNumber();
+            response.setNextUri(ApiConstants.uriByPageAsString.apply(nextPage));
+
+            final int previousPage = list.getPageable().previousOrFirst().getPageNumber();
+            response.setPreviousUri(uriByPageAsString.apply(previousPage));
+
+            response.setTotalPages(list.getTotalPages());
+            response.setTotalElements(list.getTotalElements());
+        }
+        return ResponseEntity.ok().body(response);
     }
 
-    @Override
-    public ResponseEntity<BankStatementList> getBankStatementsByAccount(AccountId accountId, Optional<Integer> page, Optional<Integer> size) {
-        return null;
-    }
 }

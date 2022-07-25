@@ -1,21 +1,28 @@
 package com.nicouema.bank.ports.input.rs.controller;
 
-import com.nicouema.bank.domain.model.Account;
-import com.nicouema.bank.domain.model.AccountId;
-import com.nicouema.bank.domain.model.User;
+import com.nicouema.bank.domain.model.*;
 import com.nicouema.bank.domain.usecase.AccountService;
 import com.nicouema.bank.ports.input.rs.api.AccountApi;
+import com.nicouema.bank.ports.input.rs.api.ApiConstants;
 import com.nicouema.bank.ports.input.rs.mapper.AccountControllerMapper;
+import com.nicouema.bank.ports.input.rs.mapper.BankStatementControllerMapper;
 import com.nicouema.bank.ports.input.rs.request.CreateAccountRequest;
+import com.nicouema.bank.ports.input.rs.response.AccountResponse;
+import com.nicouema.bank.ports.input.rs.response.BankStatementListResponse;
+import com.nicouema.bank.ports.input.rs.response.BankStatementResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 
 import static com.nicouema.bank.ports.input.rs.api.ApiConstants.ACCOUNT_URI;
+import static com.nicouema.bank.ports.input.rs.api.ApiConstants.uriByPageAsString;
 
 @RestController
 @RequestMapping(ACCOUNT_URI)
@@ -25,6 +32,8 @@ public class AccountController implements AccountApi {
     private final AccountService accountService;
 
     private final AccountControllerMapper mapper;
+
+    private final BankStatementControllerMapper statementMapper;
 
     @Override
     @PostMapping
@@ -40,5 +49,56 @@ public class AccountController implements AccountApi {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @Override
+    @GetMapping("/{branch_id}/{account_id}")
+    public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long account_id,
+                                                          @PathVariable Long branch_id) {
+        AccountId accountId = new AccountId();
+        accountId.setBranch(branch_id);
+        accountId.setId(account_id);
+
+        Account account = accountService.getAccountById(accountId);
+
+        AccountResponse response = mapper.accountToAccountResponse(account);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{branch_id}/{account_id}/statements")
+    public ResponseEntity<BankStatementListResponse> getBankStatementDesc(@PathVariable Long account_id,
+                                                                          @PathVariable Long branch_id,
+                                                                          @RequestParam Optional<Integer> page,
+                                                                          @RequestParam Optional<Integer> size) {
+
+        AccountId id = new AccountId();
+        id.setBranch(branch_id);
+        id.setId(account_id);
+
+        final int pageNumber = page.filter(p -> p > 0).orElse(ApiConstants.DEFAULT_PAGE);
+        final int pageSize = page.filter(s -> s > 0).orElse(ApiConstants.DEFAULT_PAGE_SIZE);
+
+        BankStatementList list = accountService.getBankStatementsDesc(id, PageRequest.of(pageNumber, pageSize));
+
+        BankStatementListResponse response;
+        {
+            response = new BankStatementListResponse();
+
+            List<BankStatementResponse> content = statementMapper
+                    .bankStatementListToBankStatementListResponse(list.getContent());
+            response.setContent(content);
+
+            final int nextPage = list.getPageable().next().getPageNumber();
+            response.setNextUri(uriByPageAsString.apply(nextPage));
+
+            final int previousPage = list.getPageable().previousOrFirst().getPageNumber();
+            response.setPreviousUri(uriByPageAsString.apply(previousPage));
+
+            response.setTotalPages(list.getTotalPages());
+            response.setTotalElements(list.getTotalElements());
+        }
+        return ResponseEntity.ok().body(response);
     }
 }

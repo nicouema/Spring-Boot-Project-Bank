@@ -36,7 +36,7 @@ public class ClientController implements ClientApi {
         Client client = mapper.clientCreateRequestToClient(clientRequest);
         client.setUser(user);
 
-        client = clientService.createClient(client, clientRequest.getDocumentTypeId());
+        client = clientService.createClient(client, user, clientRequest.getDocumentTypeId());
 
         ClientResponse response = mapper.clientToClientResponse(client);
 

@@ -1,6 +1,7 @@
 package com.nicouema.bank.ports.input.rs.api;
 
 import com.nicouema.bank.ports.input.rs.request.AuthenticationRequest;
+import com.nicouema.bank.ports.input.rs.request.CreateClientRequest;
 import com.nicouema.bank.ports.input.rs.request.CreateUserRequest;
 import com.nicouema.bank.ports.input.rs.response.AuthenticationResponse;
 import com.nicouema.bank.ports.input.rs.response.UserAndAuthenticationResponse;

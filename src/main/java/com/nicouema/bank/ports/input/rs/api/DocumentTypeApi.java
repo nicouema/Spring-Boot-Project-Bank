@@ -1,6 +1,6 @@
 package com.nicouema.bank.ports.input.rs.api;
 
-import com.nicouema.bank.ports.input.rs.request.DocumentTypeListResponse;
+import com.nicouema.bank.ports.input.rs.response.DocumentTypeListResponse;
 import com.nicouema.bank.ports.input.rs.request.DocumentTypeRequest;
 import com.nicouema.bank.ports.input.rs.response.DocumentTypeResponse;
 import org.springframework.http.ResponseEntity;
