@@ -52,29 +52,31 @@ public class Account implements Auditable {
 
     @Embedded
     private Audit audit;
+    
 
-    public Account updateCurrentBalance(BankStatement bankStatement) {
+    public Account updateCurrentBalance() {
 
-        Double currentBalance = this.getCurrentBalance();
-        Double currentDebt = this.getDebt();
-        Double movementAmount = bankStatement.getAmount();
-        Long movementId = bankStatement.getMovementType().getId();
+        Double currentBalance = 0.00;
+        Double currentDebt = 0.00;
 
-        if (movementId == 1L) {
-            currentBalance += movementAmount;
-        } else if (movementId == 2L) {
-            currentDebt += movementAmount;
-        } else if (movementId == 3L) {
-            if (currentBalance - movementAmount >= this.getMinimumBalanceAllowed()){
-                currentBalance -= movementAmount;
-            }
-            else {
-                throw new InsufficientBalanceException("There is not enough balance in your account");
+        for (BankStatement statement:this.getStatements()) {
+            Long movementId = statement.getMovementType().getId();
+            Double movementAmount = statement.getAmount();
+            if (movementId == 1L) {
+                currentBalance += movementAmount;
+            } else if (movementId == 2L) {
+                currentDebt += movementAmount;
+            } else if (movementId == 3L) {
+                if (currentBalance - movementAmount >= this.getMinimumBalanceAllowed()){
+                    currentBalance -= movementAmount;
+                }
+                else {
+                    throw new InsufficientBalanceException("There is not enough balance in your account");
+                }
             }
         }
         this.setCurrentBalance(currentBalance);
         this.setDebt(currentDebt);
         return this;
     }
-
 }
