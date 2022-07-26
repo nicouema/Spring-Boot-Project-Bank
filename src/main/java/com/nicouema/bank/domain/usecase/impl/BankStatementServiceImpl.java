@@ -75,6 +75,10 @@ public class BankStatementServiceImpl implements BankStatementService {
             bankStatementToUpdate.setMovementType(movementType);
         }
 
+        Account account = bankStatementToUpdate.getAccount();
+        account = account.updateCurrentBalanceADMIN();
+
+        accountRepository.save(account);
         bankStatementRepository.save(bankStatementToUpdate);
         return bankStatementToUpdate;
     }
@@ -97,7 +101,7 @@ public class BankStatementServiceImpl implements BankStatementService {
     public BankStatementList getBankStatementByMovementType(Long id, PageRequest pageRequest) {
         List<BankStatement> list = bankStatementRepository.findAll(pageRequest).filter(filterByMovementType(id))
                 .stream().toList();
-        Page<BankStatement> page = new PageImpl<>(list);
+        Page<BankStatement> page = new PageImpl<>(list, pageRequest, list.size());
         return new BankStatementList(page.getContent(), pageRequest, page.getTotalElements());
     }
 
