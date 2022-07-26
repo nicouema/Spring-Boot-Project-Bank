@@ -42,6 +42,7 @@ public class BankStatementServiceImpl implements BankStatementService {
 
         if (account.getClient_().equals(client)){
             bankStatement.setAccount(account);
+            account.addStatement(bankStatement);
             account = account.updateCurrentBalance();
         }
         else{
