@@ -1,13 +1,18 @@
 package com.nicouema.bank.ports.input.rs.controller;
 
+import com.nicouema.bank.common.exception.NotFoundException;
+import com.nicouema.bank.domain.model.AccountList;
 import com.nicouema.bank.domain.model.Client;
 import com.nicouema.bank.domain.model.ClientList;
 import com.nicouema.bank.domain.model.User;
 import com.nicouema.bank.domain.usecase.ClientService;
 import com.nicouema.bank.ports.input.rs.api.ClientApi;
+import com.nicouema.bank.ports.input.rs.mapper.AccountControllerMapper;
 import com.nicouema.bank.ports.input.rs.mapper.ClientControllerMapper;
 import com.nicouema.bank.ports.input.rs.request.CreateClientRequest;
 import com.nicouema.bank.ports.input.rs.request.UpdateClientRequest;
+import com.nicouema.bank.ports.input.rs.response.AccountListResponse;
+import com.nicouema.bank.ports.input.rs.response.AccountResponse;
 import com.nicouema.bank.ports.input.rs.response.ClientListResponse;
 import com.nicouema.bank.ports.input.rs.response.ClientResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +35,8 @@ public class ClientController implements ClientApi {
     private final ClientService clientService;
 
     private final ClientControllerMapper mapper;
+
+    private final AccountControllerMapper accountMapper;
 
 
     @Override
@@ -102,7 +109,50 @@ public class ClientController implements ClientApi {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteClientById(@PathVariable Long id) {
         clientService.deleteClientById(id);
-            
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    @GetMapping("/me")
+    public ResponseEntity<ClientResponse> getMe(@AuthenticationPrincipal User user) {
+        Long myClientId = user.getClient().getId();
+        Client me = clientService.getMe(myClientId);
+
+        ClientResponse response = mapper.clientToClientResponse(me);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("my-accounts")
+    public ResponseEntity<AccountListResponse> getMyAccounts(@AuthenticationPrincipal User user,
+                                                             @RequestParam Optional<Integer> page,
+                                                             @RequestParam Optional<Integer> size) {
+
+        final int pageNumber = page.filter( p -> p > 0 ).orElse(DEFAULT_PAGE);
+        final int pageSize = page.filter( s -> s > 0 ).orElse(DEFAULT_PAGE_SIZE);
+
+        Long myClientId = user.getClient().getId();
+
+        AccountList list = clientService.getMyAccounts(myClientId, PageRequest.of(pageNumber, pageSize));
+
+        AccountListResponse response;
+        {
+            response = new AccountListResponse();
+
+            List<AccountResponse> content = accountMapper.accountListToAccountListResponse(list.getContent());
+            response.setContent(content);
+
+            final int nextPage = list.getPageable().next().getPageNumber();
+            response.setNextUri(uriByPageAsString.apply(nextPage));
+
+            final int previousPage = list.getPageable().previousOrFirst().getPageNumber();
+            response.setPreviousUri(uriByPageAsString.apply(previousPage));
+
+            response.setTotalPages(list.getTotalPages());
+            response.setTotalElements(list.getTotalElements());
+        }
+        return ResponseEntity.ok().body(response);
     }
 }

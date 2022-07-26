@@ -1,5 +1,6 @@
 package com.nicouema.bank.domain.usecase;
 
+import com.nicouema.bank.domain.model.AccountList;
 import com.nicouema.bank.domain.model.Client;
 import com.nicouema.bank.domain.model.ClientList;
 import com.nicouema.bank.domain.model.User;
@@ -16,4 +17,8 @@ public interface ClientService {
     ClientList getAllClients(PageRequest pageRequest);
 
     void deleteClientById(Long id);
+
+    Client getMe(Long id);
+
+    AccountList getMyAccounts(Long id, PageRequest pageRequest);
 }

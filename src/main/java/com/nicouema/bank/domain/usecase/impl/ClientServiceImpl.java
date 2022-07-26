@@ -8,10 +8,12 @@ import com.nicouema.bank.domain.repository.DocumentTypeRepository;
 import com.nicouema.bank.domain.usecase.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -85,6 +87,21 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void deleteClientById(Long id) {
         clientRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Client getMe(Long id) {
+        return getClientByIdIfExist(id);
+    }
+
+    @Override
+    @Transactional
+    public AccountList getMyAccounts(Long id, PageRequest pageRequest) {
+        Client me = getMe(id);
+        List<Account> myAccounts = me.getAccounts().stream().toList();
+        Page<Account> page = new PageImpl<>(myAccounts, pageRequest, myAccounts.size());
+        return new AccountList(page.getContent(), pageRequest, page.getTotalElements());
     }
 
     private DocumentType getDocumentTypeIfExist(Long documentTypeId) {
