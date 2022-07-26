@@ -36,7 +36,7 @@ public class BankStatement implements Auditable {
     @Column(name = "statement_id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
             @JoinColumn(name = "account_id", referencedColumnName = "account_id"),
             @JoinColumn(name = "branch_id", referencedColumnName = "branch_id")})
