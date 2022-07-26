@@ -65,13 +65,13 @@ public class BankStatementServiceImpl implements BankStatementService {
 
         BankStatement bankStatementToUpdate = bankStatementRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id));
-        MovementType movementType = movementTypeRepository.findById(bankStatement.getMovementType().getId())
-                        .orElseThrow(() -> new NotFoundException(bankStatement.getMovementType().getId()));
 
         if (bankStatement.getAmount() != null) {
             bankStatementToUpdate.setAmount(bankStatement.getAmount());
         }
         if (bankStatement.getMovementType().getId() != null) {
+            MovementType movementType = movementTypeRepository.findById(bankStatement.getMovementType().getId())
+                    .orElseThrow(() -> new NotFoundException(bankStatement.getMovementType().getId()));
             bankStatementToUpdate.setMovementType(movementType);
         }
 
