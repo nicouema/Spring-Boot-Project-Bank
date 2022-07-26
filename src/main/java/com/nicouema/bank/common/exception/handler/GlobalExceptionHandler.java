@@ -1,6 +1,7 @@
 package com.nicouema.bank.common.exception.handler;
 
 import com.nicouema.bank.common.exception.ConflictException;
+import com.nicouema.bank.common.exception.InsufficientBalanceException;
 import com.nicouema.bank.common.exception.NotFoundException;
 import com.nicouema.bank.common.exception.error.ErrorCode;
 import com.nicouema.bank.common.exception.error.ErrorDetails;
@@ -31,6 +32,15 @@ public final class GlobalExceptionHandler extends AbstractExceptionHandler {
                 .detail(ex.getErrorMessage())
                 .build();
 
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    private ResponseEntity<ErrorDetails> handleNoBalance(InsufficientBalanceException ex) {
+        ErrorDetails error = ErrorDetails.builder()
+                .code(ErrorCode.INSUFFICIENT_BALANCE)
+                .detail(ex.getMessage())
+                .build();
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }

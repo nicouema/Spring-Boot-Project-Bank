@@ -31,8 +31,8 @@ public enum ErrorCode {
     PARAMS_REQUIRED("The request body may be missing mandatory parameters"),
     ROLE_INVALID("The user does not have access to the current resource"),
     UNAUTHORIZED("Wrong credentials"),
-	RESOURCE_ALREADY_EXISTS("This resource already exists");
-
+	RESOURCE_ALREADY_EXISTS("This resource already exists"),
+    INSUFFICIENT_BALANCE("Insufficient Balance");
     private final String defaultMessage;
 
 }

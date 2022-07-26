@@ -5,7 +5,6 @@ CREATE TABLE statement
     branch_id			bigint		not null,
     movement_type_id    bigint      not null,
     amount              double      not null,
-    operation_date_time datetime(6) not null,
     created_at          datetime(6)     not null,
     is_active           bit             not null,
     deleted_at          datetime(6)     null,

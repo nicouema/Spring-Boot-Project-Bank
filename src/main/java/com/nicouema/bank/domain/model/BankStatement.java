@@ -26,7 +26,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Entity(name = "statement")
-@Where(clause = "is_active=true AND operation_date_time=CURRENT_TIMESTAMP()")
+@Where(clause = "is_active=true")
 @SQLDelete(sql = "UPDATE statement SET is_active=false WHERE statement_id=?")
 @EntityListeners(AuditListener.class)
 public class BankStatement implements Auditable {
@@ -42,7 +42,7 @@ public class BankStatement implements Auditable {
             @JoinColumn(name = "branch_id", referencedColumnName = "branch_id")})
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "movement_type_id", referencedColumnName = "movement_id")
     private MovementType movementType;
 

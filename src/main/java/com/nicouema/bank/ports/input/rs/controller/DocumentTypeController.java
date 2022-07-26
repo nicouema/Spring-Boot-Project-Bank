@@ -61,7 +61,8 @@ public class DocumentTypeController implements DocumentTypeApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<DocumentTypeListResponse> getAllDocumentTypes(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> size) {
+    public ResponseEntity<DocumentTypeListResponse> getAllDocumentTypes(@RequestParam Optional<Integer> page,
+                                                                        @RequestParam Optional<Integer> size) {
 
         final int pageNumber = page.filter(p -> p > 0).orElse(ApiConstants.DEFAULT_PAGE);
         final int pageSize = page.filter(s -> s > 0).orElse(ApiConstants.DEFAULT_PAGE_SIZE);

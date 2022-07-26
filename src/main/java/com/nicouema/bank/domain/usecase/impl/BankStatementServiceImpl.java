@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 @Service
@@ -64,19 +65,13 @@ public class BankStatementServiceImpl implements BankStatementService {
 
         BankStatement bankStatementToUpdate = bankStatementRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id));
-        //TODO: accountId and movementTypeId get param from request
-        Account account = accountRepository.findById(bankStatement.getAccount().getAccountId())
-                .orElseThrow(() -> new NotFoundException(bankStatement.getAccount().getAccountId()));
         MovementType movementType = movementTypeRepository.findById(bankStatement.getMovementType().getId())
                         .orElseThrow(() -> new NotFoundException(bankStatement.getMovementType().getId()));
 
         if (bankStatement.getAmount() != null) {
             bankStatementToUpdate.setAmount(bankStatement.getAmount());
         }
-        if (bankStatement.getAccount() != null) {
-            bankStatementToUpdate.setAccount(account);
-        }
-        if (bankStatement.getMovementType() != null) {
+        if (bankStatement.getMovementType().getId() != null) {
             bankStatementToUpdate.setMovementType(movementType);
         }
 
@@ -107,24 +102,9 @@ public class BankStatementServiceImpl implements BankStatementService {
     }
 
 
-    @Override
-    @Transactional
-    public BankStatementList getBankStatementByAccount(AccountId id, PageRequest pageRequest) {
-        List<BankStatement> list = bankStatementRepository.findAll(pageRequest).filter(filterByAccount(id))
-                .stream().toList();
-        Page<BankStatement> page = new PageImpl<>(list);
-        return new BankStatementList(page.getContent(), pageRequest, page.getTotalElements());
-    }
-
-    private Predicate<BankStatement> filterByAccount(AccountId accountId) {
-        return (BankStatement bankStatement) -> {
-            return bankStatement.getAccount().getAccountId().equals(accountId);
-        };
-    }
-
     public Predicate<BankStatement> filterByMovementType(Long movementTypeId) {
         return (BankStatement bankStatement) -> {
-            return bankStatement.getMovementType().getId().equals(movementTypeId);
+            return Objects.equals(bankStatement.getMovementType().getId(), movementTypeId);
         };
     }
 }

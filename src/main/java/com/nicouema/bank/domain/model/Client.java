@@ -12,6 +12,7 @@ import org.hibernate.annotations.Where;
 
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -61,4 +62,17 @@ public class Client implements Auditable {
 
     @Embedded
     private Audit audit;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client aClient = (Client) o;
+        return Objects.equals(id, aClient.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

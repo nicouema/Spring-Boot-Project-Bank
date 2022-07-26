@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.nicouema.bank.ports.input.rs.api.ApiConstants.DOCUMENT_TYPE_URI;
+import static com.nicouema.bank.ports.input.rs.api.ApiConstants.*;
 
 //@Configuration
 @EnableWebSecurity
@@ -34,6 +35,10 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(DOCUMENT_TYPE_URI + "/**").hasRole("ADMIN")
+                .antMatchers(MOVEMENT_TYPE_URI + "/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, CLIENT_URI).authenticated()
+                .antMatchers(ACCOUNT_URI).hasRole("ADMIN")
+                .antMatchers(ACCOUNT_URI + "/**").authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

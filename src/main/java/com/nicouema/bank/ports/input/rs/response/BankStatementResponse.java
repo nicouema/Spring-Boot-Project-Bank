@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BankStatementResponse {
 
-    private AccountResponse account;
-
     private MovementTypeResponse movementType;
 
     private Double amount;

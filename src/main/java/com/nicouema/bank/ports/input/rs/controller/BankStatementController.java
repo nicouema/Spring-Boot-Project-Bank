@@ -45,7 +45,7 @@ public class BankStatementController implements BankStatementApi {
         Client client = user.getClient();
 
         final Long id = service.createBankStatement(bankStatement,
-                createBankStatementRequest.getMovementTypeId(),
+                createBankStatementRequest.getMovementType(),
                 accountId,
                 client);
 
@@ -57,11 +57,13 @@ public class BankStatementController implements BankStatementApi {
     }
 
     @Override
-    @PatchMapping
-    public ResponseEntity<BankStatementResponse> updateBankStatement(Long id, BankStatementRequest updateBankStatementRequest) {
+    @PatchMapping("{id}")
+    public ResponseEntity<BankStatementResponse> updateBankStatement(@PathVariable Long id,
+                                                                     @RequestBody BankStatementRequest updateBankStatementRequest) {
         BankStatement bankStatement = mapper.bankStatementRequestToBankStatement(updateBankStatementRequest);
 
-        service.updateBankStatement(id, bankStatement);
+
+        bankStatement = service.updateBankStatement(id, bankStatement);
 
         BankStatementResponse response = mapper.bankStatementToBankStatementResponse(bankStatement);
 

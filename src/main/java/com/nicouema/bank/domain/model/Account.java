@@ -1,5 +1,6 @@
 package com.nicouema.bank.domain.model;
 
+import com.nicouema.bank.common.exception.InsufficientBalanceException;
 import com.nicouema.bank.domain.model.audit.Audit;
 import com.nicouema.bank.domain.model.audit.AuditListener;
 import com.nicouema.bank.domain.model.audit.Auditable;
@@ -11,7 +12,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -30,7 +30,7 @@ public class Account implements Auditable {
     @JoinColumn(name = "branch_id", referencedColumnName = "branch_id", nullable = false, updatable = false, insertable = false)
     private Branch branch;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id",nullable = false)
     private Client client_;
 
@@ -40,10 +40,41 @@ public class Account implements Auditable {
     @Column(name = "initial_balance")
     private Double initialBalance;
 
+    @Column(name = "current_balance")
+    private Double currentBalance;
+
+    @Column(name = "debt")
+    private Double debt;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     @ToString.Exclude
     private Set<BankStatement> statements;
 
     @Embedded
     private Audit audit;
+
+    public Account updateCurrentBalance(BankStatement bankStatement) {
+
+        Double currentBalance = this.getCurrentBalance();
+        Double currentDebt = this.getDebt();
+        Double movementAmount = bankStatement.getAmount();
+        Long movementId = bankStatement.getMovementType().getId();
+
+        if (movementId == 1L) {
+            currentBalance += movementAmount;
+        } else if (movementId == 2L) {
+            currentDebt += movementAmount;
+        } else if (movementId == 3L) {
+            if (currentBalance - movementAmount >= this.getMinimumBalanceAllowed()){
+                currentBalance -= movementAmount;
+            }
+            else {
+                throw new InsufficientBalanceException("There is not enough balance in your account");
+            }
+        }
+        this.setCurrentBalance(currentBalance);
+        this.setDebt(currentDebt);
+        return this;
+    }
+
 }

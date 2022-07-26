@@ -1,7 +1,6 @@
 package com.nicouema.bank.domain.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +9,7 @@ import java.util.Objects;
 @Embeddable
 @Getter
 @Setter
+@NoArgsConstructor
 public class AccountId implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

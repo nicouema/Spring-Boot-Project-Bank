@@ -20,7 +20,8 @@ public interface BankStatementApi {
                                              @Valid Long accountId,
                                              User user);
 
-    ResponseEntity<BankStatementResponse> updateBankStatement(@NotNull Long id , @Valid BankStatementRequest updateBankStatementRequest);
+    ResponseEntity<BankStatementResponse> updateBankStatement(@NotNull Long id ,
+                                                              @Valid BankStatementRequest updateBankStatementRequest);
 
     ResponseEntity<BankStatementResponse> getBankStatementById(@NotNull Long id);
 
