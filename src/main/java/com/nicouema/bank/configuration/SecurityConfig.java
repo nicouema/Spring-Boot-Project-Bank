@@ -22,7 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static com.nicouema.bank.ports.input.rs.api.ApiConstants.*;
 
-//@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -34,11 +33,20 @@ public class SecurityConfig {
 
         http.csrf().disable()
                 .authorizeRequests()
+//               >> DOCUMENT-TYPES && MOVEMENT_TYPES
                 .antMatchers(DOCUMENT_TYPE_URI + "/**").hasRole("ADMIN")
                 .antMatchers(MOVEMENT_TYPE_URI + "/**").hasRole("ADMIN")
+//               >> ACCOUNTS && STATEMENTS
+                .antMatchers(HttpMethod.GET, ACCOUNT_URI).hasRole("ADMIN")
+//                .antMatchers(ACCOUNT_URI + "/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, ACCOUNT_URI).authenticated()
+                .antMatchers(HttpMethod.PATCH, BANK_STATEMENT_URI + "/**").hasRole("ADMIN")
+                .antMatchers(BANK_STATEMENT_URI + "/**").authenticated()
+//               >> CLIENTS
                 .antMatchers(HttpMethod.POST, CLIENT_URI).authenticated()
-                .antMatchers(ACCOUNT_URI).hasRole("ADMIN")
-                .antMatchers(ACCOUNT_URI + "/**").authenticated()
+                .antMatchers(CLIENT_URI).hasRole("ADMIN")
+                .antMatchers(CLIENT_URI + "/my-accounts").authenticated()
+                .antMatchers(CLIENT_URI + "/me").authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
