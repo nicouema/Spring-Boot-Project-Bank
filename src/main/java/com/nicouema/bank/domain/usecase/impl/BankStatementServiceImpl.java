@@ -42,7 +42,7 @@ public class BankStatementServiceImpl implements BankStatementService {
 
         if (account.getClient_().equals(client)){
             bankStatement.setAccount(account);
-            account = account.updateCurrentBalance(bankStatement);
+            account = account.updateCurrentBalance();
         }
         else{
             throw new ConflictException("current client doesn't own this account");
@@ -76,7 +76,7 @@ public class BankStatementServiceImpl implements BankStatementService {
         }
 
         Account account = bankStatementToUpdate.getAccount();
-        account = account.updateCurrentBalanceADMIN();
+        account = account.updateCurrentBalance();
 
         accountRepository.save(account);
         bankStatementRepository.save(bankStatementToUpdate);
