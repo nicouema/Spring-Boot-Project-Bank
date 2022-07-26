@@ -2,6 +2,7 @@ package com.nicouema.bank.ports.input.rs.api;
 
 import com.nicouema.bank.domain.model.User;
 import com.nicouema.bank.ports.input.rs.request.CreateAccountRequest;
+import com.nicouema.bank.ports.input.rs.response.AccountListResponse;
 import com.nicouema.bank.ports.input.rs.response.AccountResponse;
 import com.nicouema.bank.ports.input.rs.response.BankStatementListResponse;
 import org.springframework.http.ResponseEntity;
@@ -20,4 +21,7 @@ public interface AccountApi {
 
     ResponseEntity<BankStatementListResponse> getBankStatementDesc(@Valid Long account_id, @Valid Long branch_id,
                                                                    Optional<Integer> page, Optional<Integer> size);
+
+    ResponseEntity<AccountListResponse> getAllAccounts(Optional<Integer> page, Optional<Integer> size);
+
 }

@@ -7,9 +7,7 @@ import com.nicouema.bank.ports.input.rs.api.ApiConstants;
 import com.nicouema.bank.ports.input.rs.mapper.AccountControllerMapper;
 import com.nicouema.bank.ports.input.rs.mapper.BankStatementControllerMapper;
 import com.nicouema.bank.ports.input.rs.request.CreateAccountRequest;
-import com.nicouema.bank.ports.input.rs.response.AccountResponse;
-import com.nicouema.bank.ports.input.rs.response.BankStatementListResponse;
-import com.nicouema.bank.ports.input.rs.response.BankStatementResponse;
+import com.nicouema.bank.ports.input.rs.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +19,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import static com.nicouema.bank.ports.input.rs.api.ApiConstants.ACCOUNT_URI;
-import static com.nicouema.bank.ports.input.rs.api.ApiConstants.uriByPageAsString;
+import static com.nicouema.bank.ports.input.rs.api.ApiConstants.*;
+import static com.nicouema.bank.ports.input.rs.api.ApiConstants.DEFAULT_PAGE_SIZE;
 
 @RestController
 @RequestMapping(ACCOUNT_URI)
@@ -88,6 +86,34 @@ public class AccountController implements AccountApi {
 
             List<BankStatementResponse> content = statementMapper
                     .bankStatementListToBankStatementListResponse(list.getContent());
+            response.setContent(content);
+
+            final int nextPage = list.getPageable().next().getPageNumber();
+            response.setNextUri(uriByPageAsString.apply(nextPage));
+
+            final int previousPage = list.getPageable().previousOrFirst().getPageNumber();
+            response.setPreviousUri(uriByPageAsString.apply(previousPage));
+
+            response.setTotalPages(list.getTotalPages());
+            response.setTotalElements(list.getTotalElements());
+        }
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<AccountListResponse> getAllAccounts(@RequestParam Optional<Integer> page,
+                                                              @RequestParam Optional<Integer> size) {
+        final int pageNumber = page.filter( p -> p > 0 ).orElse(DEFAULT_PAGE);
+        final int pageSize = page.filter( s -> s > 0 ).orElse(DEFAULT_PAGE_SIZE);
+
+        AccountList list = accountService.getAllAccounts(PageRequest.of(pageNumber, pageSize));
+
+        AccountListResponse response;
+        {
+            response = new AccountListResponse();
+
+            List<AccountResponse> content = mapper.accountListToAccountListResponse(list.getContent());
             response.setContent(content);
 
             final int nextPage = list.getPageable().next().getPageNumber();

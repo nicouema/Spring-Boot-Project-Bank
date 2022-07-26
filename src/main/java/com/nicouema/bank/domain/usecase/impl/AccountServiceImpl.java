@@ -64,6 +64,13 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public AccountList getAllAccounts(PageRequest pageRequest) {
+        Page<Account> page = accountRepository.findAll(pageRequest);
+
+        return new AccountList(page.getContent(), pageRequest, page.getTotalElements());
+    }
+
     private Branch getBranchByIdIfExist(Long branchId) {
 
         return branchRepository.findById(branchId).orElseThrow(() -> new NotFoundException(branchId));

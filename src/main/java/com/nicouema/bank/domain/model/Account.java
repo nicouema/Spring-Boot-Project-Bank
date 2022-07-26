@@ -79,4 +79,8 @@ public class Account implements Auditable {
         this.setDebt(currentDebt);
         return this;
     }
+
+    public void addStatement(BankStatement bankStatement) {
+        this.statements.add(bankStatement);
+    }
 }
