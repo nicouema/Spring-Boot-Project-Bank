@@ -2,6 +2,7 @@ CREATE TABLE branch
 (
     branch_id       bigint      not null auto_increment,
     name            varchar(50) not null,
+    street_name     varchar(30) not null,
     street_number   int         not null,
     city_id         bigint      not null,
     created_at      datetime(6)     not null,
