@@ -125,7 +125,7 @@ public class ClientController implements ClientApi {
     }
 
     @Override
-    @GetMapping("my-accounts")
+    @GetMapping("/my-accounts")
     public ResponseEntity<AccountListResponse> getMyAccounts(@AuthenticationPrincipal User user,
                                                              @RequestParam Optional<Integer> page,
                                                              @RequestParam Optional<Integer> size) {
