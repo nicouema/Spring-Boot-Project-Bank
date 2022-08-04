@@ -21,6 +21,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -39,6 +41,9 @@ public class Branch implements Auditable {
     private Long id;
 
     private String name;
+
+    @Column(name = "street_name")
+    private String streetName;
 
     @Column(name = "street_number")
     private Integer streetNumber;
@@ -67,5 +72,13 @@ public class Branch implements Auditable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public List<Client> getClients() {
+        List<Client> list = new ArrayList<>();
+        for (Account account:this.getAccounts()) {
+            list.add(account.getClient_());
+        }
+        return list;
     }
 }
