@@ -51,7 +51,7 @@ public class Client implements Auditable {
     @Column(name = "street_number")
     private Integer streetNumber;
 
-    @OneToMany(mappedBy = "client_", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client_", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Account> accounts;
 
