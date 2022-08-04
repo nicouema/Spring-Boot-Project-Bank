@@ -17,10 +17,12 @@ public interface AccountApi {
     ResponseEntity<Void> createAccount(@Valid CreateAccountRequest createAccountRequest,
                                        User user);
 
-    ResponseEntity<AccountResponse> getAccountById(@Valid Long account_id, @Valid Long branch_id);
+    ResponseEntity<AccountResponse> getAccountById(@Valid Long account_id, @Valid Long branch_id,
+                                                   User user);
 
     ResponseEntity<BankStatementListResponse> getBankStatementDesc(@Valid Long account_id, @Valid Long branch_id,
-                                                                   Optional<Integer> page, Optional<Integer> size);
+                                                                   Optional<Integer> page, Optional<Integer> size,
+                                                                   User user);
 
     ResponseEntity<AccountListResponse> getAllAccounts(Optional<Integer> page, Optional<Integer> size);
 

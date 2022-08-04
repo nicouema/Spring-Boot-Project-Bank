@@ -46,7 +46,7 @@ public class Account implements Auditable {
     @Column(name = "debt")
     private Double debt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
     @ToString.Exclude
     private Set<BankStatement> statements;
 

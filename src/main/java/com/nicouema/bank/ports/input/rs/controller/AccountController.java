@@ -52,12 +52,13 @@ public class AccountController implements AccountApi {
     @Override
     @GetMapping("/{branch_id}/{account_id}")
     public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long account_id,
-                                                          @PathVariable Long branch_id) {
+                                                          @PathVariable Long branch_id,
+                                                          @AuthenticationPrincipal User user) {
         AccountId accountId = new AccountId();
         accountId.setBranch(branch_id);
         accountId.setId(account_id);
 
-        Account account = accountService.getAccountById(accountId);
+        Account account = accountService.getAccountFromUser(accountId, user);
 
         AccountResponse response = mapper.accountToAccountResponse(account);
 
@@ -69,7 +70,8 @@ public class AccountController implements AccountApi {
     public ResponseEntity<BankStatementListResponse> getBankStatementDesc(@PathVariable Long account_id,
                                                                           @PathVariable Long branch_id,
                                                                           @RequestParam Optional<Integer> page,
-                                                                          @RequestParam Optional<Integer> size) {
+                                                                          @RequestParam Optional<Integer> size,
+                                                                          @AuthenticationPrincipal User user) {
 
         AccountId id = new AccountId();
         id.setBranch(branch_id);
@@ -78,7 +80,9 @@ public class AccountController implements AccountApi {
         final int pageNumber = page.filter(p -> p > 0).orElse(ApiConstants.DEFAULT_PAGE);
         final int pageSize = page.filter(s -> s > 0).orElse(ApiConstants.DEFAULT_PAGE_SIZE);
 
-        BankStatementList list = accountService.getBankStatementsDesc(id, PageRequest.of(pageNumber, pageSize));
+        Account account = accountService.getAccountFromUser(id, user);
+
+        BankStatementList list = accountService.getBankStatementsDesc(account, PageRequest.of(pageNumber, pageSize));
 
         BankStatementListResponse response;
         {

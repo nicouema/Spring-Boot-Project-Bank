@@ -50,9 +50,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public BankStatementList getBankStatementsDesc(AccountId id, PageRequest pageRequest) {
-
-        Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+    public BankStatementList getBankStatementsDesc(Account account, PageRequest pageRequest) {
 
         List<BankStatement> list = account.getStatements().stream()
                 .sorted((a2, a1) -> a1.getAudit().getCreatedAt().compareTo(a2.getAudit().getCreatedAt()))
@@ -69,6 +67,17 @@ public class AccountServiceImpl implements AccountService {
         Page<Account> page = accountRepository.findAll(pageRequest);
 
         return new AccountList(page.getContent(), pageRequest, page.getTotalElements());
+    }
+
+    @Override
+    public Account getAccountFromUser(AccountId accountId, User user) {
+        List<Account> accountList = user.getClient().getAccounts().stream().toList();
+        for (Account account:accountList) {
+            if (account.getAccountId().equals(accountId)){
+                return account;
+            }
+        }
+        throw new NotFoundException(accountId.getId());
     }
 
     private Branch getBranchByIdIfExist(Long branchId) {

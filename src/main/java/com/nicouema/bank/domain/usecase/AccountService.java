@@ -9,7 +9,9 @@ public interface AccountService {
 
     AccountId createAccount(Account account, User user, Long branchId);
 
-    BankStatementList getBankStatementsDesc(AccountId id, PageRequest pageRequest);
+    BankStatementList getBankStatementsDesc(Account account, PageRequest pageRequest);
 
     AccountList getAllAccounts(PageRequest pageRequest);
+
+    Account getAccountFromUser(AccountId accountId, User user);
 }
