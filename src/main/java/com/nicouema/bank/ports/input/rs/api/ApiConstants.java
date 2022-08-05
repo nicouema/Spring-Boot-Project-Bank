@@ -7,15 +7,22 @@ import java.util.function.Function;
 public interface ApiConstants {
 
     String DOCUMENT_TYPE_URI="/document-types";
+
     String USER_URI="/users";
+
     String AUTHENTICATION_URI="/auth";
+
     String MOVEMENT_TYPE_URI="/movement-types";
+
     String BANK_STATEMENT_URI="/statements";
 
     String ACCOUNT_URI="/accounts";
 
     String CLIENT_URI="/clients";
 
+    String BRANCH_URI="/branches";
+
+    String CITY_URI="/cities";
     Function<Integer, String> uriByPageAsString = (page) ->
             ServletUriComponentsBuilder.fromCurrentRequest()
                     .replaceQueryParam("page", page).toUriString();

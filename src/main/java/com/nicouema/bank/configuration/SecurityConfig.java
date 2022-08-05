@@ -33,12 +33,13 @@ public class SecurityConfig {
 
         http.csrf().disable()
                 .authorizeRequests()
-//               >> DOCUMENT-TYPES && MOVEMENT_TYPES
+//               >> ADMIN:: DOCUMENT-TYPES && MOVEMENT_TYPES && BRANCHES
                 .antMatchers(DOCUMENT_TYPE_URI + "/**").hasRole("ADMIN")
                 .antMatchers(MOVEMENT_TYPE_URI + "/**").hasRole("ADMIN")
+                .antMatchers(BRANCH_URI + "/**").hasRole("ADMIN")
+                .antMatchers(CITY_URI + "/**").hasRole("ADMIN")
 //               >> ACCOUNTS && STATEMENTS
                 .antMatchers(HttpMethod.GET, ACCOUNT_URI).hasRole("ADMIN")
-//                .antMatchers(ACCOUNT_URI + "/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, ACCOUNT_URI).authenticated()
                 .antMatchers(HttpMethod.PATCH, BANK_STATEMENT_URI + "/**").hasRole("ADMIN")
                 .antMatchers(BANK_STATEMENT_URI + "/**").authenticated()
