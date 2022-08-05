@@ -111,8 +111,9 @@ public class BranchController implements BranchApi {
     @Override
     @GetMapping
     public ResponseEntity<BranchListResponse> getAllBranches(Optional<Integer> page, Optional<Integer> size) {
+
         final int pageNumber = page.filter( p -> p > 0 ).orElse(DEFAULT_PAGE);
-        final int pageSize = page.filter( s -> s > 0 ).orElse(DEFAULT_PAGE_SIZE);
+        final int pageSize = size.filter( s -> s > 0 ).orElse(DEFAULT_PAGE_SIZE);
 
         BranchList list = branchService.getAllBranches(PageRequest.of(pageNumber, pageSize));
 
