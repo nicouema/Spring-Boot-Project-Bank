@@ -131,4 +131,15 @@ public class AccountController implements AccountApi {
         }
         return ResponseEntity.ok().body(response);
     }
+
+    @Override
+    @DeleteMapping("{branchId}/{accountId}")
+    public ResponseEntity<Void> deleteAccountById(@PathVariable Long accountId,
+                                                  @PathVariable Long branchId) {
+        AccountId accountId1 = new AccountId();
+        accountId1.setId(accountId);
+        accountId1.setBranch(branchId);
+        accountService.deleteAccountById(accountId1);
+        return ResponseEntity.noContent().build();
+    }
 }
