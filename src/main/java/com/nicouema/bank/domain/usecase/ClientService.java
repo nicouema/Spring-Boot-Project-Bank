@@ -6,6 +6,8 @@ import com.nicouema.bank.domain.model.ClientList;
 import com.nicouema.bank.domain.model.User;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 public interface ClientService {
 
     Client createClient(Client client, User user, Long documentTypeId);
@@ -21,4 +23,6 @@ public interface ClientService {
     Client getMe(Long id);
 
     AccountList getMyAccounts(Long id, PageRequest pageRequest);
+
+    List<Client> getAllClients();
 }
