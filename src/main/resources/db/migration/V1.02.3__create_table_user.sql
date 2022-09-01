@@ -8,6 +8,7 @@ create table user
     is_active           bit             not null,
     created_at          datetime(6)     not null,
     updated_at          datetime(6)     null,
+    deleted_at          datetime(6)         null,
     primary key (user_id),
     foreign key (role_id) references role(role_id)
 ) engine = InnoDB;

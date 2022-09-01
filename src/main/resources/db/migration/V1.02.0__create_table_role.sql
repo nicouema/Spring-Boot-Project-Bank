@@ -6,5 +6,6 @@ create table role
     is_active bit not null,
     created_at datetime(6) not null,
     updated_at datetime(6) null,
+    deleted_at      datetime(6)     null,
     primary key (role_id)
 ) engine = InnoDB;
