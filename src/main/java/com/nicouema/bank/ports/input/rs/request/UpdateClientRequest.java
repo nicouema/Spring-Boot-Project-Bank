@@ -17,18 +17,14 @@ import javax.validation.constraints.Positive;
 public class UpdateClientRequest {
 
     @JsonProperty("doc_type_id")
-    @NotNull
     @Positive
     private Long documentTypeId;
 
-    @NotBlank(message = "Id Number must not be blank")
     @JsonProperty("id_number")
     private String idNumber;
 
-    @NotBlank(message = "Name must not be blank")
     private String name;
 
-    @NotBlank(message = "Lastname must not be blank")
     private String lastname;
 
     @JsonProperty("phone_number")
