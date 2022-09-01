@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "client")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE FROM client SET is_active=false WHERE client_id=?")
+@SQLDelete(sql = "UPDATE client SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE client_id=?")
 @EntityListeners(AuditListener.class)
 public class Client implements Auditable {
 

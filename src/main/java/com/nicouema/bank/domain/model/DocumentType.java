@@ -27,7 +27,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "document_type")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE document_type SET is_active=false WHERE document_type_id=?")
+@SQLDelete(sql = "UPDATE document_type SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE document_type_id=?")
 @EntityListeners(AuditListener.class)
 public class DocumentType implements Auditable {
 

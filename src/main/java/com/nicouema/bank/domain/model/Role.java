@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity(name = "role")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE role SET is_active=false WHERE role_id=?")
+@SQLDelete(sql = "UPDATE role SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE role_id=?")
 @EntityListeners(AuditListener.class)
 public class Role implements Auditable, GrantedAuthority {
 

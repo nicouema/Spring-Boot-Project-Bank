@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "account")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE account SET is_active=false WHERE branch_id=?")
+@SQLDelete(sql = "UPDATE account SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE branch_id=? AND account_id=?")
 @EntityListeners(AuditListener.class)
 public class Account implements Auditable {
 
@@ -47,7 +47,7 @@ public class Account implements Auditable {
     @Column(name = "debt")
     private Double debt;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private Set<BankStatement> statements;
 

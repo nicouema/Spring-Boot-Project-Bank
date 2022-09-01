@@ -26,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "movement_type")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE movement_type SET is_active=false")
+@SQLDelete(sql = "UPDATE movement_type SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE movement_id=?")
 @EntityListeners(AuditListener.class)
 public class MovementType implements Auditable {
 

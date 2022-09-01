@@ -23,7 +23,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity(name = "user")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE user SET is_active=false WHERE user_id=?")
+@SQLDelete(sql = "UPDATE user SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE user_id=?")
 @EntityListeners(AuditListener.class)
 public class User implements Auditable, UserDetails {
 

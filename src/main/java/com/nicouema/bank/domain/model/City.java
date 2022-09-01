@@ -27,7 +27,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "city")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE city SET is_active=false WHERE city_id=?")
+@SQLDelete(sql = "UPDATE city SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE city_id=?")
 @EntityListeners(AuditListener.class)
 public class City implements Auditable {
 

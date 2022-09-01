@@ -14,4 +14,6 @@ public interface AccountService {
     AccountList getAllAccounts(PageRequest pageRequest);
 
     Account getAccountFromUser(AccountId accountId, User user);
+
+    void deleteAccountById(AccountId accountId);
 }

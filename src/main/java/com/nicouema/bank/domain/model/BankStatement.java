@@ -17,7 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity(name = "statement")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE statement SET is_active=false WHERE statement_id=?")
+@SQLDelete(sql = "UPDATE statement SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE statement_id=?")
 @EntityListeners(AuditListener.class)
 public class BankStatement implements Auditable {
 

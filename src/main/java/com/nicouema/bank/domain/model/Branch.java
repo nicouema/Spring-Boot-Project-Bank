@@ -31,7 +31,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "branch")
 @Where(clause = "is_active=true")
-@SQLDelete(sql = "UPDATE branch SET is_active=false WHERE branch_id = ?")
+@SQLDelete(sql = "UPDATE branch SET is_active=false, deleted_at=CURRENT_TIMESTAMP() WHERE branch_id = ?")
 @EntityListeners(AuditListener.class)
 public class Branch implements Auditable {
 
