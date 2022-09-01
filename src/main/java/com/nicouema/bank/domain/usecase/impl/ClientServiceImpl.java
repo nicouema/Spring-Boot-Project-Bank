@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -102,6 +103,13 @@ public class ClientServiceImpl implements ClientService {
         List<Account> myAccounts = me.getAccounts().stream().toList();
         Page<Account> page = new PageImpl<>(myAccounts, pageRequest, myAccounts.size());
         return new AccountList(page.getContent(), pageRequest, page.getTotalElements());
+    }
+
+    @Override
+    @Transactional
+    public List<Client> getAllClients() {
+        Iterable<Client> iterator = clientRepository.findAll();
+        return Streamable.of(iterator).toList();
     }
 
     private DocumentType getDocumentTypeIfExist(Long documentTypeId) {
