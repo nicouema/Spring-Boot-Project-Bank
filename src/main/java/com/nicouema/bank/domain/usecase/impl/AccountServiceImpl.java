@@ -80,6 +80,13 @@ public class AccountServiceImpl implements AccountService {
         throw new NotFoundException(accountId.getId());
     }
 
+    @Override
+    @Transactional
+    public void deleteAccountById(AccountId accountId) {
+        accountRepository.findById(accountId).ifPresent(accountRepository::delete);
+
+    }
+
     private Branch getBranchByIdIfExist(Long branchId) {
 
         return branchRepository.findById(branchId).orElseThrow(() -> new NotFoundException(branchId));
