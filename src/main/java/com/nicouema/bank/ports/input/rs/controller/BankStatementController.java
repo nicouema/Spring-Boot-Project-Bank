@@ -85,7 +85,7 @@ public class BankStatementController implements BankStatementApi {
         final int pageNumber = page.filter(p -> p > 0).orElse(DEFAULT_PAGE);
         final int pageSize = size.filter(s -> s > 0).orElse(DEFAULT_PAGE_SIZE);
 
-        BankStatementList list = service.getAllBankStatements(PageRequest.of(pageNumber, pageSize));
+        BankStatementList list = service.getBankStatements(PageRequest.of(pageNumber, pageSize));
 
         BankStatementListResponse response;
         {

@@ -23,6 +23,9 @@ public interface ApiConstants {
     String BRANCH_URI="/branches";
 
     String CITY_URI="/cities";
+
+    String DOWNLOAD_URI="/download";
+
     Function<Integer, String> uriByPageAsString = (page) ->
             ServletUriComponentsBuilder.fromCurrentRequest()
                     .replaceQueryParam("page", page).toUriString();

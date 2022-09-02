@@ -33,11 +33,14 @@ public class SecurityConfig {
 
         http.csrf().disable()
                 .authorizeRequests()
+//               >> DOCUMENTATION && LOGIN, REGISTER
+                .antMatchers("/api/docs/**", "/api/swagger-ui/**", "/v3/api-docs/**", "/auth/login", "/auth/register").permitAll()
 //               >> ADMIN:: DOCUMENT-TYPES && MOVEMENT_TYPES && BRANCHES
                 .antMatchers(DOCUMENT_TYPE_URI + "/**").hasRole("ADMIN")
                 .antMatchers(MOVEMENT_TYPE_URI + "/**").hasRole("ADMIN")
                 .antMatchers(BRANCH_URI + "/**").hasRole("ADMIN")
                 .antMatchers(CITY_URI + "/**").hasRole("ADMIN")
+                .antMatchers(DOWNLOAD_URI + "/**").permitAll()
 //               >> ACCOUNTS && STATEMENTS
                 .antMatchers(HttpMethod.GET, ACCOUNT_URI).hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, ACCOUNT_URI).authenticated()
@@ -46,6 +49,7 @@ public class SecurityConfig {
 //               >> CLIENTS
                 .antMatchers(HttpMethod.POST, CLIENT_URI).authenticated()
                 .antMatchers(CLIENT_URI).hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, CLIENT_URI + "/*").authenticated()
                 .antMatchers(CLIENT_URI + "/my-accounts").authenticated()
                 .antMatchers(CLIENT_URI + "/me").authenticated()
                 .and()

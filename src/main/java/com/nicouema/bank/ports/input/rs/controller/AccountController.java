@@ -111,7 +111,7 @@ public class AccountController implements AccountApi {
         final int pageNumber = page.filter( p -> p > 0 ).orElse(DEFAULT_PAGE);
         final int pageSize = page.filter( s -> s > 0 ).orElse(DEFAULT_PAGE_SIZE);
 
-        AccountList list = accountService.getAllAccounts(PageRequest.of(pageNumber, pageSize));
+        AccountList list = accountService.getAccounts(PageRequest.of(pageNumber, pageSize));
 
         AccountListResponse response;
         {

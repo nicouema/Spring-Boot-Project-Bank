@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -92,7 +93,7 @@ public class BankStatementServiceImpl implements BankStatementService {
 
     @Override
     @Transactional
-    public BankStatementList getAllBankStatements(PageRequest pageRequest) {
+    public BankStatementList getBankStatements(PageRequest pageRequest) {
         Page<BankStatement> page = bankStatementRepository.findAll(pageRequest);
         return new BankStatementList(page.getContent(), pageRequest, page.getTotalElements());
     }
@@ -104,6 +105,13 @@ public class BankStatementServiceImpl implements BankStatementService {
                 .stream().toList();
         Page<BankStatement> page = new PageImpl<>(list, pageRequest, list.size());
         return new BankStatementList(page.getContent(), pageRequest, page.getTotalElements());
+    }
+
+    @Override
+    @Transactional
+    public List<BankStatement> getAllBankStatements() {
+        Iterable<BankStatement> iterator = bankStatementRepository.findAll();
+        return Streamable.of(iterator).toList();
     }
 
 

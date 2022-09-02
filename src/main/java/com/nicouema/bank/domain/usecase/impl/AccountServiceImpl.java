@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -63,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountList getAllAccounts(PageRequest pageRequest) {
+    public AccountList getAccounts(PageRequest pageRequest) {
         Page<Account> page = accountRepository.findAll(pageRequest);
 
         return new AccountList(page.getContent(), pageRequest, page.getTotalElements());
@@ -85,6 +86,12 @@ public class AccountServiceImpl implements AccountService {
     public void deleteAccountById(AccountId accountId) {
         accountRepository.findById(accountId).ifPresent(accountRepository::delete);
 
+    }
+
+    @Override
+    public List<Account> getAllAccounts() {
+        Iterable<Account> iterator = accountRepository.findAll();
+        return Streamable.of(iterator).toList();
     }
 
     private Branch getBranchByIdIfExist(Long branchId) {
