@@ -35,7 +35,8 @@ public class SecurityConfig {
                 .authorizeRequests()
 //               >> DOCUMENTATION && LOGIN, REGISTER
                 .antMatchers("/api/docs/**", "/api/swagger-ui/**", "/v3/api-docs/**", "/auth/login", "/auth/register").permitAll()
-//               >> ADMIN:: DOCUMENT-TYPES && MOVEMENT_TYPES && BRANCHES
+//               >> ADMIN:: DOCUMENT-TYPES && MOVEMENT_TYPES && BRANCHES && DELETE OPERATIONS
+                .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
                 .antMatchers(DOCUMENT_TYPE_URI + "/**").hasRole("ADMIN")
                 .antMatchers(MOVEMENT_TYPE_URI + "/**").hasRole("ADMIN")
                 .antMatchers(BRANCH_URI + "/**").hasRole("ADMIN")
