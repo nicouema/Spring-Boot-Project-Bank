@@ -1,6 +1,5 @@
 package com.nicouema.bank.domain.usecase.impl;
 
-import com.nicouema.bank.common.exception.ConflictException;
 import com.nicouema.bank.common.exception.NotFoundException;
 import com.nicouema.bank.domain.model.*;
 import com.nicouema.bank.domain.repository.AccountRepository;
@@ -47,7 +46,7 @@ public class BankStatementServiceImpl implements BankStatementService {
             account = account.updateCurrentBalance();
         }
         else{
-            throw new ConflictException("current client doesn't own this account");
+            throw new NotFoundException(accountId.getId());
         }
 
         accountRepository.save(account);
