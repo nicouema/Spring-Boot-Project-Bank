@@ -39,7 +39,7 @@ public interface BankStatementApi {
                             schema = @Schema(implementation = ErrorDetails.class),
                             examples = @ExampleObject(value = "{\"code\":\"ROLE_INVALID\"," +
                                     "\"detail\":\"The user does not have access to the current resource\"}"))}),
-            @ApiResponse(responseCode = "404", description = "account not found",
+            @ApiResponse(responseCode = "404", description = "Not Found",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             array = @ArraySchema(schema = @Schema(implementation = ErrorDetails.class)),
                             examples = @ExampleObject(value = "[{\"code\":\"RESOURCE_ALREADY_EXISTS\"," +
@@ -100,8 +100,26 @@ public interface BankStatementApi {
     })
     ResponseEntity<BankStatementResponse> getBankStatementById(@NotNull Long id, User user);
 
+    @Operation(summary = "Get All Statement", description = "Get Bank Statements", responses = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "403", description = "Forbidden",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDetails.class),
+                            examples = @ExampleObject(value = "{\"code\":\"ROLE_INVALID\"," +
+                                    "\"detail\":\"The user does not have access to the current resource\"}"))})
+
+    })
     ResponseEntity<BankStatementListResponse> getAllBankStatements(Optional<Integer> page, Optional<Integer> size);
 
+    @Operation(summary = "Get Statements by Movement Type", description = "Get Statements by Movement Type id", responses = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "403", description = "Forbidden",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDetails.class),
+                            examples = @ExampleObject(value = "{\"code\":\"ROLE_INVALID\"," +
+                                    "\"detail\":\"The user does not have access to the current resource\"}"))})
+
+    })
     ResponseEntity<BankStatementListResponse> getBankStatementsByMovementType(Long movementTypeId, Optional<Integer> page, Optional<Integer> size);
 
 }
