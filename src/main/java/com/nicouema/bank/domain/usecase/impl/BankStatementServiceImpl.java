@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Streamable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -40,7 +41,9 @@ public class BankStatementServiceImpl implements BankStatementService {
 
         bankStatement.setMovementType(movementType);
 
-        if (account.getClient_().equals(client)){
+        Client accountOwner = account.getClient_();
+
+        if (verifyClient(accountOwner, client)){
             bankStatement.setAccount(account);
             account.addStatement(bankStatement);
             account = account.updateCurrentBalance();
@@ -62,32 +65,45 @@ public class BankStatementServiceImpl implements BankStatementService {
 
     @Override
     @Transactional
-    public BankStatement updateBankStatement(Long id, BankStatement bankStatement) {
+    public BankStatement updateBankStatement(Long id, BankStatement bankStatement, Client client) {
 
         BankStatement bankStatementToUpdate = bankStatementRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id));
+        Client statementOwner = bankStatementToUpdate.getAccount().getClient_();
+        if (verifyClient(client, statementOwner)){
+            if (bankStatement.getAmount() != null) {
+                bankStatementToUpdate.setAmount(bankStatement.getAmount());
+            }
+            if (bankStatement.getMovementType().getId() != null) {
+                MovementType movementType = movementTypeRepository.findById(bankStatement.getMovementType().getId())
+                        .orElseThrow(() -> new NotFoundException(bankStatement.getMovementType().getId()));
+                bankStatementToUpdate.setMovementType(movementType);
+            }
 
-        if (bankStatement.getAmount() != null) {
-            bankStatementToUpdate.setAmount(bankStatement.getAmount());
+            Account account = bankStatementToUpdate.getAccount();
+            account = account.updateCurrentBalance();
+
+            accountRepository.save(account);
+            bankStatementRepository.save(bankStatementToUpdate);
+            return bankStatementToUpdate;
         }
-        if (bankStatement.getMovementType().getId() != null) {
-            MovementType movementType = movementTypeRepository.findById(bankStatement.getMovementType().getId())
-                    .orElseThrow(() -> new NotFoundException(bankStatement.getMovementType().getId()));
-            bankStatementToUpdate.setMovementType(movementType);
+        else {
+            throw new NotFoundException(id);
         }
 
-        Account account = bankStatementToUpdate.getAccount();
-        account = account.updateCurrentBalance();
-
-        accountRepository.save(account);
-        bankStatementRepository.save(bankStatementToUpdate);
-        return bankStatementToUpdate;
     }
 
     @Override
     @Transactional
-    public BankStatement getBankStatementById(Long id) {
-        return bankStatementRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+    public BankStatement getBankStatementById(Long id, Client client) {
+        BankStatement statement = bankStatementRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        Client resourceOwner = statement.getAccount().getClient_();
+        if (verifyClient(resourceOwner, client)){
+            return statement;
+        }
+        else {
+            throw new NotFoundException(id);
+        }
     }
 
     @Override
@@ -118,5 +134,9 @@ public class BankStatementServiceImpl implements BankStatementService {
         return (BankStatement bankStatement) -> {
             return Objects.equals(bankStatement.getMovementType().getId(), movementTypeId);
         };
+    }
+
+    public Boolean verifyClient(Client clientInSession, Client resourceOwner) {
+        return Objects.equals(clientInSession, resourceOwner);
     }
 }
