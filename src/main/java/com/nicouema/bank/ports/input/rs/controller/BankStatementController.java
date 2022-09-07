@@ -59,11 +59,12 @@ public class BankStatementController implements BankStatementApi {
     @Override
     @PatchMapping("{id}")
     public ResponseEntity<BankStatementResponse> updateBankStatement(@PathVariable Long id,
-                                                                     @RequestBody BankStatementRequest updateBankStatementRequest) {
+                                                                     @RequestBody BankStatementRequest updateBankStatementRequest,
+                                                                     @AuthenticationPrincipal User user) {
         BankStatement bankStatement = mapper.bankStatementRequestToBankStatement(updateBankStatementRequest);
 
 
-        bankStatement = service.updateBankStatement(id, bankStatement);
+        bankStatement = service.updateBankStatement(id, bankStatement, user.getClient());
 
         BankStatementResponse response = mapper.bankStatementToBankStatementResponse(bankStatement);
 
@@ -72,8 +73,9 @@ public class BankStatementController implements BankStatementApi {
 
     @Override
     @GetMapping("{id}")
-    public ResponseEntity<BankStatementResponse> getBankStatementById(@PathVariable Long id) {
-        BankStatement bankStatement = service.getBankStatementById(id);
+    public ResponseEntity<BankStatementResponse> getBankStatementById(@PathVariable Long id,
+                                                                      @AuthenticationPrincipal User user) {
+        BankStatement bankStatement = service.getBankStatementById(id, user.getClient());
         BankStatementResponse response = mapper.bankStatementToBankStatementResponse(bankStatement);
         return ResponseEntity.ok(response);
     }
