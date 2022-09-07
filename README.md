@@ -2,5 +2,5 @@
 
 | Username       | Password     | Role  |
 |----------------|--------------|-------|
-| user1@bank.com | passworduser1| USER  |
+| user1@bank.com | user1password| USER  |
 | admin1@bank.com| password     | ADMIN |
