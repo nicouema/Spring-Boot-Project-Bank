@@ -9,9 +9,9 @@ public interface BankStatementService {
 
     Long createBankStatement(BankStatement bankStatement, Long movementTypeId, AccountId accountId, Client client);
 
-    BankStatement updateBankStatement(Long id, BankStatement bankStatement);
+    BankStatement updateBankStatement(Long id, BankStatement bankStatement, Client client);
 
-    BankStatement getBankStatementById(Long id);
+    BankStatement getBankStatementById(Long id, Client client);
 
     BankStatementList getBankStatements(PageRequest pageRequest);
 
