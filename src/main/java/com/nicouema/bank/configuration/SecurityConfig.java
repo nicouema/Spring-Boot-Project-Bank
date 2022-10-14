@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, ACCOUNT_URI).hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, ACCOUNT_URI).authenticated()
                 .antMatchers(HttpMethod.PATCH, BANK_STATEMENT_URI + "/**").hasRole("ADMIN")
-                .antMatchers(BANK_STATEMENT_URI + "/**").authenticated()
+                .antMatchers(HttpMethod.GET, BANK_STATEMENT_URI + "/movement-type/**").hasRole("ADMIN")
+                .antMatchers(BANK_STATEMENT_URI).hasRole("ADMIN")
 //               >> CLIENTS
                 .antMatchers(HttpMethod.POST, CLIENT_URI).authenticated()
                 .antMatchers(CLIENT_URI).hasRole("ADMIN")
