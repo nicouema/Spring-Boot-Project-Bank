@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.mapstruct.Mapping;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,7 +16,9 @@ import org.mapstruct.Mapping;
 public class BankStatementRequest {
 
     @JsonProperty("movement_type_id")
+    @NotNull
     private Long movementType;
 
+    @NotNull
     private Double amount;
 }
