@@ -4,7 +4,6 @@ import com.nicouema.bank.domain.model.Account;
 import com.nicouema.bank.ports.input.rs.request.CreateAccountRequest;
 import com.nicouema.bank.ports.input.rs.response.AccountDownloadResponse;
 import com.nicouema.bank.ports.input.rs.response.AccountResponse;
-import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -3,6 +3,10 @@ package com.nicouema.bank.domain.model;
 import com.nicouema.bank.domain.model.audit.Audit;
 import com.nicouema.bank.domain.model.audit.AuditListener;
 import com.nicouema.bank.domain.model.audit.Auditable;
+import com.nicouema.bank.domain.model.strategies.ChargeStrategy;
+import com.nicouema.bank.domain.model.strategies.DepositStrategy;
+import com.nicouema.bank.domain.model.strategies.MovementTypeStrategy;
+import com.nicouema.bank.domain.model.strategies.WithdrawStrategy;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,6 +42,9 @@ public class BankStatement implements Auditable {
 
     private Double amount;
 
+    @Transient
+    private MovementTypeStrategy strategy;
+
     @Embedded
     private Audit audit;
 
@@ -52,5 +59,19 @@ public class BankStatement implements Auditable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void createStrategyInterface(){
+        if (movementType.getId() == 1L) strategy = new DepositStrategy();
+        if (movementType.getId() == 2L) strategy = new ChargeStrategy();
+        if (movementType.getId() == 3L) strategy = new WithdrawStrategy();
+    }
+
+    public Double calculateCurrentBalance(Double oldBalance, Double minimumAllowed) {
+        return strategy.calculateCurrentBalance(oldBalance, amount, minimumAllowed);
+    }
+
+    public Double calculateCurrentDebt(Double oldDebt) {
+        return strategy.calculateCurrentDebt(oldDebt, amount);
     }
 }

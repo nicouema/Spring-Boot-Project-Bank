@@ -45,8 +45,8 @@ public class BankStatementServiceImpl implements BankStatementService {
 
         if (verifyClient(accountOwner, client)){
             bankStatement.setAccount(account);
+            bankStatement.createStrategyInterface();
             account.addStatement(bankStatement);
-            account = account.updateCurrentBalance();
         }
         else{
             throw new NotFoundException(accountId.getId());
@@ -81,7 +81,8 @@ public class BankStatementServiceImpl implements BankStatementService {
             }
 
             Account account = bankStatementToUpdate.getAccount();
-            account = account.updateCurrentBalance();
+            bankStatementToUpdate.createStrategyInterface();
+            account.updateCurrentBalance(bankStatementToUpdate);
 
             accountRepository.save(account);
             bankStatementRepository.save(bankStatementToUpdate);

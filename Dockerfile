@@ -1,5 +1,4 @@
-FROM amazoncorretto:17
-LABEL maintainer="nicouemacapdevila@gmail.com"
+FROM amazoncorretto:17.0.4-alpine3.15
 COPY ./target/bank-0.0.1-SNAPSHOT.jar bank-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/bank-0.0.1-SNAPSHOT.jar"]
+CMD ["java","-jar","/bank-0.0.1-SNAPSHOT.jar"]
